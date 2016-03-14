@@ -1,7 +1,9 @@
-#define CATCH_CONFIG_MAIN
-
-#include "catch.hpp"
 #include "MyString.h"
+#include <cassert>
+#include <stdexcept>
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
 
 
 
@@ -33,9 +35,9 @@ TEST_CASE("TEST 3") {
 
 TEST_CASE("Test 4") {
     char B = 'q';
-    String A(B, 10);
+    String A(B, 1);
     const char *pt = A.data();
-    REQUIRE(A.size() == 10);
+    REQUIRE(A.size() == 1);
     for (unsigned i = 0; i < A.size(); ++i) {
         REQUIRE(B == *(pt++));
     }
@@ -50,7 +52,6 @@ TEST_CASE("Test5") {
         REQUIRE(B[i] == A[i]);
     }
 }
-
 TEST_CASE("Test6") {
     String B("Test6");
     String C(B);
@@ -213,7 +214,7 @@ TEST_CASE ("Test_plus_2") {
 
 TEST_CASE ("Test_plus_3") {
     String A("Test_");
-    char * B = "plus_1";
+    char  B[] = "plus_1";
     String C;
     String res("Test_plus_1");
     C = B + A;

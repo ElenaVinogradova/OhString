@@ -1,13 +1,13 @@
-#ifndef CPP_STRING_H
-#define CPP_STRING_H
-//one definition rule
+#ifndef MYSTRING_H
+#define MYSTRING_H
+#include <iostream>
 
 class String {
 private:
-    size_t length; //length of actual string, w/o EOL symvol
-    char * string;
+    unsigned int size_;
+    char *str_;
+    static char npos;
 public:
-    static char position;
     String();
     String(const char *str);
     String(const char *str, unsigned count);
@@ -22,22 +22,16 @@ public:
     String & operator+=(const char *suffix);
     String & operator+=(char suffix);
     void swap(String &other);
-    char & operator[](size_t pos);
-    const char operator[](size_t pos) const;
-/**
-throws an exception if pos >= size()
-*/
-    char & at(size_t pos);
+    char & operator[](unsigned pos);
+    const char operator[](unsigned pos) const;
 
-/**
-throws an exception if pos >= size()
-*/
-    const char at(size_t pos) const;
-/**
-/return pointer to '\0' terminated C-style string
-*/
+    char & at(unsigned int pos);
+    const char  at (unsigned int pos)const ;
+
     const char * data() const;
-    size_t size() const;
+
+    unsigned int size() const;
+
     friend bool operator==(const String &lhs, const String &rhs);
     friend bool operator<(const String &lhs, const String &rhs);
 };
@@ -49,7 +43,3 @@ bool operator<=(const String &lhs, const String &rhs);
 bool operator>(const String &lhs, const String &rhs);
 bool operator>=(const String &lhs, const String &rhs);
 #endif
-
-
-
-
