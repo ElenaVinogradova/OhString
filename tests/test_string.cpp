@@ -63,7 +63,7 @@ TEST_CASE("Test6") {
     REQUIRE(B.size() == 0);
     REQUIRE(*(B.data()) == '\0');
 }
-
+/*
 TEST_CASE ("Test_assigment1") {
     String A("Test_assigment1");
     String B, C;
@@ -85,7 +85,7 @@ TEST_CASE ("Test_assigment2") {
     REQUIRE(B.size() == 0);
     REQUIRE(*(B.data()) == '\0');
 }
-/*
+
 TEST_CASE ("Test_plus_assigment_1") {
     char res[] = "plus_assigment";
     String A("plus_");
