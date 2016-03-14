@@ -16,7 +16,7 @@ String::String(const char *str, unsigned count) : size_(count) {
     std::strcpy(str_, str);
 }
 
-String::String(char ch, unsigned count) : size_(count), str_(new char[size_+1]) {
+String::String(char ch, unsigned count) : size_(count) {
     str_ = new char[count + 1];
     for (unsigned i = 0; i < count; ++i ){
         str_[i] = ch;
