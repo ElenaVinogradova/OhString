@@ -1,6 +1,8 @@
 #include "MyString.h"
 #include <cstring>
 #include <stdexcept>
+#define __STDC_WANT_LIB_EXT1__ 1
+
 
 char String::npos = '\0';
 
@@ -54,30 +56,57 @@ String &String::operator=(String &&other){
 }
 
 String &String::operator+=(const String &suffix) {
-    char *a = new char(size_);
+    char *str = new char[size_+suffix.size_+1];
+    std::strcpy(str, str_);
+    std::strcpy((str+size_), suffix.str_);
+    if (str_ != &npos) {
+        delete[] str_;
+    }
+    str_ = str;
+    size_+= suffix.size_;
+    /*char *a = new char(size_);
     std::strcpy(a,str_);
     std::strcat(a,suffix.str_);
     String temp (a);
-    this->swap(temp);
+    this->swap(temp);*/
     return *this;
 }
 
 String &String::operator+=(const char *suffix) {
-    char *a = new char(size_);
-    std::strcpy(a,str_);
+    unsigned int size = std::strlen(suffix);
+    char *str = new char[size_+size+1];
+    std::strcpy(str, str_);
+    std::strcpy((str+size_), suffix);
+    if (str_ != &npos) {
+        delete[] str_;
+    }
+    size_+= size;
+    str_ = str;
+    return *this;
+    /*char a [size_];
+    std::strcat (a,size_,str_);
     std::strcat(a,suffix);
     String temp (a);
-    this->swap(temp);
+    this->swap(temp);*/
     return *this;
 }
 
 String &String::operator+=(char suffix) {
-    String b(suffix,1);
+    char *str = new char[size_+2];
+    std::strcpy(str, str_);
+    *(str+size_) = suffix;
+    *(str+size_+1) = npos;
+    if (str_ != &npos) {
+        delete[] str_;
+    }
+    size_= size_ + 1;
+    str_ = str;
+    /*String b(suffix,1);
     char *a = new char(size_);
     std::strcpy(a,str_);
     std::strcat(a,b.str_);
     String temp (a);
-    this->swap(temp);
+    this->swap(temp);*/
     return *this;
 }
 
