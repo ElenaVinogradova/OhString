@@ -1,145 +1,254 @@
-#include <cstring>
+#include <stddef.h>
 #include <stdexcept>
 #include "MyString.h"
-char String :: pos_ = '\0';
 
-// конец строки
-String::String():size_st(0),str_(&pos_){
-};
-String::String(const char *str):size_st(std::strlen(str)){
-    str_ = new char[size_st + 1];
-    std ::strcpy(str_,str);
-};
-String::String(const char *str, unsigned count){
-    str_ = new char[count + 1];
-    for (unsigned i = 0; i < count; ++i ){
-        str_[i] = *str;
-        ++str;
+
+String::String() {
+    length = 0;
+    string = new char[1];
+    string[0] = '\0';
+}
+
+String::String(const char *str) {
+    length = 0;
+    const char *temp = str;
+    while (*(temp++) != '\0') {
+        length++;
     }
-    str_[count] = '\0';
-    size_st = count;
-};
-String :: String(char ch, unsigned count){
-    str_ = new char[count + 1];
-    for (unsigned i = 0; i < count; ++i ){
-        str_[i] = ch;
+    char *strCopy = new char[length + 1];
+    for (std::size_t i = 0; i < length; i++) {
+        strCopy[i] = str[i];
     }
-    str_[count] = '\0';
-    size_st = count;
-};
-String::String(const String &other):size_st(other.size_st){
-    str_ = new char (size_st +1);
-    std :: strcpy(str_,other.str_);
-};
-String::String(String &&other):size_st(other.size_st),str_(other.str_){
-    other.size_st = 0;
-    other.str_ = &pos_;
-};
-String :: ~String(){
-        if(str_!= &pos_){
-            delete[] str_;
+
+    string = strCopy;
+    string[length] = '\0';
+}
+
+//cut from beginning
+String::String(const char *str, unsigned count) {
+    string = new char[count + 1];
+    length = count;
+    for (std::size_t i = 0; i <= length; i++) {
+        string[i] = str[i];
+    }
+}
+
+//repeat symbol count times
+String::String(char ch, unsigned count) {
+    length = count;
+    string = new char[length + 1];
+    char *temp = string;
+
+    for (std::size_t i = 0; i < length; ++i) {
+        *(temp++) = ch;
+    }
+    *(temp) = '\0';
+
+}
+
+//copy constructor
+String::String(const String &other) {
+    string = new char[other.length + 1];
+    length = other.length;
+    for (size_t i = 0; i <= length; ++i) {
+        string[i] = other.string[i];
+    }
+}
+
+
+String::String(String &&other) {
+    string = other.string;
+    length = other.length;
+    //other.string[0] = '\0'; //no magic
+    char nully = '\0';
+    other.string = &(nully); //magic
+    other.length = 0;
+}
+
+
+String::~String() {
+    if (string[0] != '\0') {
+        delete[] string;
+    }
+}
+
+//optize
+String &String::operator=(const String &other) {
+    delete[] string;
+    string = new char[other.length + 1];
+    length = other.length;
+    for (size_t i = 0; i < length; i++) {
+        string[i] = other.string[i];
+    }
+    string[length] = '\0';
+    return *this;
+}
+
+String &String::operator=(String &&other) {
+    delete[] string;
+    string = other.string;
+    length = other.length;
+
+    char nully = '\0';
+    other.string = &(nully); //magic #2
+    other.length = 0;
+    return *this;
+
+}
+
+String &String::operator+=(const String &suffix) {
+    char *concat = new char[length + suffix.length + 1];
+    for (size_t i = 0; i < length; ++i) {
+        concat[i] = string[i];
+    }
+    for (size_t j = length; j < length + suffix.length; ++j) {
+        concat[j] = suffix.string[j - length];
+    }
+    concat[length + suffix.length] = '\0';
+    delete[] string;
+    string = concat;
+    length += suffix.length;
+
+    return *this;
+}
+
+String &String::operator+=(const char *suffix) {
+    size_t suffixLength = 0;
+    const char *temp = suffix;
+    while (*(temp++) != '\0') {
+        suffixLength++;
+    }
+
+    char *concat = new char[length + suffixLength + 1];
+    for (size_t i = 0; i < length; ++i) {
+        concat[i] = string[i];
+    }
+    for (size_t j = length; j < length + suffixLength; ++j) {
+        concat[j] = suffix[j - length];
+    }
+    concat[length + suffixLength] = '\0';
+    delete[] string;
+    string = concat;
+    length += suffixLength;
+    return *this;
+}
+
+String &String::operator+=(char suffix) {
+    char *concat = new char[length + 2];
+    for (size_t i = 0; i < length; ++i) {
+        concat[i] = string[i];
+    }
+    concat[length] = suffix;
+    concat[length + 1] = '\0';
+    delete[] string;
+    string = concat;
+    length++;
+    return *this;
+}
+
+void String::swap(String &other) {
+    char *tmp;
+    size_t tmpLength;
+    tmp = string;
+    tmpLength = length;
+    string = other.string;
+    length = other.length;
+    other.string = tmp;
+    other.length = tmpLength;
+}
+
+char &String::operator[](size_t pos) {
+    return string[pos];
+}
+
+const char String::operator[](size_t pos) const {
+    return string[pos];
+}
+
+char &String::at(size_t pos) {
+    if (pos >= length) {
+        throw std::out_of_range("");
+    }
+    return string[pos];
+}
+
+//this is the same
+const char String::at(size_t pos) const {
+    if (pos >= length) {
+        throw std::out_of_range("");
+    }
+    return string[pos];
+}
+
+const char *String::data() const {
+    return string;
+}
+
+size_t String::size() const {
+    return length;
+}
+
+bool operator==(const String &lhs, const String &rhs) {
+    if (lhs.length == rhs.length) {
+        for (size_t i = 0; i < lhs.length; ++i) {
+            if (lhs.string[i] != rhs.string[i]) {
+                return false;
+            }
         }
-};
-String &String :: operator=(const String &other) {
-    String temp (other);
-    this-> swap(temp);
-    return *this;
+        return true;
+    }
+    return false;
 }
-String &String :: operator=(String &&other){
-    String temp (other);
-    this-> swap(temp);
-    other.str_ = &pos_;
-    other.size_st = 0;
-    return *this;
 
-}
-String &String :: operator+=(const String &suffix){
-    String a(str_);
-    std :: strcat(a.str_,suffix.str_);
-    String temp(a.str_);
-    this->swap(temp);
-    return  *this;
-}
-String &String :: operator+=(const char *suffix){
-    String a(str_);
-    std :: strcat(a.str_,suffix);
-    String temp(a.str_);
-    this->swap(temp);
-    return  *this;
-}
-String &String:: operator+=(char suffix){
-    String a (suffix,1);
-    String b (str_);
-    std :: strcat(b.str_,a.str_);
-    String temp(b.str_);
-    this->swap(temp);
-    return  *this;
-}
-void String :: swap(String &other){
-    std :: swap (str_,other.str_);
-    std :: swap (size_st,other.size_st);
-}
-char &String :: operator[](unsigned pos){
-    return str_[pos];
-}
-const char String ::operator[](unsigned pos) const{
-    return str_[pos];
-}
-char &String::at(unsigned int pos) {
-    if (pos >= size_st) {
-        throw std::out_of_range("");
-    }
-    return str_[pos];
-}
-const char String::at(unsigned int pos) const {
-    if (pos >= size_st) {
-        throw std::out_of_range("");
-    }
-    return str_[pos];
-}
-const char *String:: data() const{
-    return str_;
-};
-unsigned int String::size() const{
-    return size_st;
-};
-bool operator==(const String &lhs, const String &rhs){
-    int k = std :: strcmp(lhs.str_,rhs.str_);
-    if (k == 0){
-        return true;
-    }
-    else {return false;}
-}
 bool operator<(const String &lhs, const String &rhs) {
-    int k = std :: strcmp(lhs.str_,rhs.str_);
-    if (k < 0){
+    size_t size;
+    size = lhs.length <= rhs.length ? lhs.length : rhs.length;
+    for (size_t i = 0; i < size; ++i) {
+        if (lhs.string[i] < rhs.string[i]) {
+            return true;
+        } else if (lhs.string[i] > rhs.string[i]) {
+            return false;
+        }
+    }
+    if (rhs.length > lhs.length) {
         return true;
     }
-    else {return false;}
+    return false;
 }
+
+
 String operator+(const String &lhs, const String &rhs) {
-    return String(lhs) += rhs;
+    String tmp(lhs);
+    tmp += rhs;
+    return tmp;
+//    return (String(lhs) += rhs);
 }
+
 String operator+(const String &lhs, const char *rhs) {
     return String(lhs) += rhs;
 }
+
 String operator+(const char *lhs, const String &rhs) {
-    String B(rhs);
-    B += lhs;
-    return B;
+    return String(rhs) += lhs;
 }
+
 bool operator!=(const String &lhs, const String &rhs) {
     return !(lhs == rhs);
 }
+
 bool operator<=(const String &lhs, const String &rhs) {
     return (lhs == rhs) || (lhs < rhs);
 }
+
 bool operator>(const String &lhs, const String &rhs) {
     return !(lhs <= rhs);
 }
+
 bool operator>=(const String &lhs, const String &rhs) {
     return !(lhs < rhs);
 }
+
+
 std::ostream &operator<<(std::ostream &stream, const String &A) {
     return stream << A.data();
 }
