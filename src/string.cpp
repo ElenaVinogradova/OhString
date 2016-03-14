@@ -54,8 +54,7 @@ String &String::operator=(String &&other){
 }
 
 String &String::operator+=(const String &suffix) {
-    const unsigned int b = size_;
-    char a[b];
+    char *a = new char(size_);
     std::strcpy(a,str_);
     std::strcat(a,suffix.str_);
     String temp (a);
