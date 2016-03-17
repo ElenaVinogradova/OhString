@@ -93,6 +93,7 @@ TEST_CASE ("Test_plus_assigment_1") {
     String B("assigment");
     size_t Bsize = B.size();
     A += B;
+    std::cout<<A.data()<<std::endl;
     REQUIRE(A.size() == (Asize + Bsize));
     for (size_t i = 0; i <= A.size(); ++i) {
         REQUIRE(res[i] == A[i]);

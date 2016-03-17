@@ -4,9 +4,9 @@
 
 class String {
 private:
-    unsigned int size_;
+    unsigned int size_st;
     char *str_;
-    static char npos;
+    static char pos_;
 public:
     String();
     String(const char *str);
