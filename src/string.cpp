@@ -12,7 +12,7 @@ String::String(const char *str) : size_st(std::strlen(str)) {
 }
 
 String::String(const char *str, unsigned count) : size_st(count) {
-   str_ = new char [count + 1];
+    str_ = new char [count + 1];
     for (unsigned int i = 0; i < count; i++){
         str_[i] = str[i];
     }
@@ -88,67 +88,85 @@ void String :: swap(String &other){
     std :: swap (str_,other.str_);
     std :: swap (size_st,other.size_st);
 }
+
 char &String :: operator[](unsigned pos){
     return str_[pos];
 }
+
 const char String ::operator[](unsigned pos) const{
     return str_[pos];
 }
+
 char &String::at(unsigned int pos) {
     if (pos >= size_st) {
         throw std::out_of_range("");
     }
     return str_[pos];
 }
+
 const char String::at(unsigned int pos) const {
     if (pos >= size_st) {
         throw std::out_of_range("");
     }
     return str_[pos];
 }
+
 const char *String:: data() const{
     return str_;
-};
+}
+
 unsigned int String::size() const{
     return size_st;
-};
+}
+
 bool operator==(const String &lhs, const String &rhs){
     int k = std :: strcmp(lhs.str_,rhs.str_);
     if (k == 0){
         return true;
     }
-    else {return false;}
+    else {
+        return false;
+    }
 }
+
 bool operator<(const String &lhs, const String &rhs) {
     int k = std :: strcmp(lhs.str_,rhs.str_);
     if (k < 0){
         return true;
     }
-    else {return false;}
+    else {
+        return false;
+    }
 }
+
 String operator+(const String &lhs, const String &rhs) {
     return String(lhs) += rhs;
 }
+
 String operator+(const String &lhs, const char *rhs) {
     return String(lhs) += rhs;
 }
+
 String operator+(const char *lhs, const String &rhs) {
-    String B(rhs);
-    B += lhs;
-    return B;
+    return String(rhs) += lhs;
 }
+
 bool operator!=(const String &lhs, const String &rhs) {
     return !(lhs == rhs);
 }
+
 bool operator<=(const String &lhs, const String &rhs) {
     return (lhs == rhs) || (lhs < rhs);
 }
+
 bool operator>(const String &lhs, const String &rhs) {
     return !(lhs <= rhs);
 }
+
 bool operator>=(const String &lhs, const String &rhs) {
     return !(lhs < rhs);
 }
+
 std::ostream &operator<<(std::ostream &stream, const String &A) {
     return stream << A.data();
 }
