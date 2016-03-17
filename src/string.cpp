@@ -61,7 +61,6 @@ String &String::operator+=(const String &suffix) {
     std::strcpy(a, str_);
     std::strcat(a,suffix.str_);
     String temp (a);
-    delete[] a;
     this->swap(temp);
     return *this;
 }
@@ -71,7 +70,6 @@ String &String::operator+=(const char *suffix) {
     std::strcpy(a, str_);
     std::strcat(a,suffix);
     String temp (a);
-    delete[] a;
     this->swap(temp);
     return *this;
 }
