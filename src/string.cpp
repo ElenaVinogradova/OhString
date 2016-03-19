@@ -83,6 +83,7 @@ String &String::operator+=(char suffix) {
     std::strcat(a,b.str_);
     String temp (a);
     this->swap(temp);
+    delete[] a;
     return *this;
 }
 
