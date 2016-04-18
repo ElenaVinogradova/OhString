@@ -51,8 +51,15 @@ String &String::operator=(const String &other){
 }
 
 String &String::operator=(String &&other){
-    String b(other);
-    this->swap(b);
+    if (&(other) != this) {
+        if (str_ != &pos_) {
+            delete[] str_;
+        }
+        str_ = other.str_;
+        size_st = other.size_st;
+        other.str_ = &pos_;
+        other.size_st = 0;
+    }
     return *this;
 }
 
@@ -60,9 +67,8 @@ String &String::operator+=(const String &suffix) {
     char *a = new char[size_st + suffix.size_st + 1];
     std::strcpy(a, str_);
     std::strcat(a,suffix.str_);
-    String temp (a);
-    delete[] a;
-    this->swap(temp);
+    str_ = a;
+    size_st += suffix.size_st;
     return *this;
 }
 
@@ -70,9 +76,8 @@ String &String::operator+=(const char *suffix) {
     char *a = new char[size_st + std::strlen(suffix) + 1];
     std::strcpy(a, str_);
     std::strcat(a,suffix);
-    String temp (a);
-    this->swap(temp);
-    delete[] a;
+    str_ = a;
+    size_st += std::strlen(suffix);
     return *this;
 }
 
@@ -81,35 +86,34 @@ String &String::operator+=(char suffix) {
     char *a = new char[size_st + 2];
     std::strcpy(a,str_);
     std::strcat(a,b.str_);
-    String temp (a);
-    this->swap(temp);
-    delete[] a;
+    str_ = a;
+    size_st += 1;
     return *this;
 }
 
-void String :: swap(String &other){
-    std :: swap (str_,other.str_);
-    std :: swap (size_st,other.size_st);
+void String::swap(String &other){
+    std::swap (str_,other.str_);
+    std::swap (size_st,other.size_st);
 }
 
-char &String :: operator[](unsigned pos){
+char &String::operator[](unsigned pos){
     return str_[pos];
 }
 
-const char String ::operator[](unsigned pos) const{
+const char String::operator[](unsigned pos) const{
     return str_[pos];
 }
 
 char &String::at(unsigned int pos) {
     if (pos >= size_st) {
-        throw std::out_of_range("");
+        throw std::out_of_range("positon >= size of string");
     }
     return str_[pos];
 }
 
 const char String::at(unsigned int pos) const {
     if (pos >= size_st) {
-        throw std::out_of_range("");
+        throw std::out_of_range("positon >= size of string");
     }
     return str_[pos];
 }
@@ -123,23 +127,11 @@ unsigned int String::size() const{
 }
 
 bool operator==(const String &lhs, const String &rhs){
-    int k = std :: strcmp(lhs.str_,rhs.str_);
-    if (k == 0){
-        return true;
-    }
-    else {
-        return false;
-    }
+    return !std::strcmp(lhs.str_, rhs.str_);
 }
 
 bool operator<(const String &lhs, const String &rhs) {
-    int k = std :: strcmp(lhs.str_,rhs.str_);
-    if (k < 0){
-        return true;
-    }
-    else {
-        return false;
-    }
+    return std::strcmp(lhs.str_, rhs.str_) < 0;
 }
 
 String operator+(const String &lhs, const String &rhs) {
