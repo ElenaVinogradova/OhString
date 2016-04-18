@@ -67,6 +67,7 @@ String &String::operator+=(const String &suffix) {
     char *a = new char[size_st + suffix.size_st + 1];
     std::strcpy(a, str_);
     std::strcat(a,suffix.str_);
+    delete[] str_;
     str_ = a;
     size_st += suffix.size_st;
     return *this;
@@ -76,6 +77,7 @@ String &String::operator+=(const char *suffix) {
     char *a = new char[size_st + std::strlen(suffix) + 1];
     std::strcpy(a, str_);
     std::strcat(a,suffix);
+    delete[] str_;
     str_ = a;
     size_st += std::strlen(suffix);
     return *this;
@@ -86,6 +88,7 @@ String &String::operator+=(char suffix) {
     char *a = new char[size_st + 2];
     std::strcpy(a,str_);
     std::strcat(a,b.str_);
+    delete[] str_;
     str_ = a;
     size_st += 1;
     return *this;
